@@ -1,0 +1,17 @@
+{
+  "name": "schnell",
+  "version": "0.0.1",
+  "description": "",
+  "author": {
+    "name": "Dylan Moore",
+    "email": "dzmoore@gmail.com"
+  },
+  "dependencies": {
+    "soap": "~0.9.1",
+    "mongodb": "~2.0.39"
+  },
+  "devDependencies": {
+    "should": "~7.0.2",
+    "mocha": "~2.2.5"
+  }
+}
