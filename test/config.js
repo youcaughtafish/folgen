@@ -1,8 +1,8 @@
 var mongo = require('mongodb').MongoClient;
 var should = require("should");
 var fs = require('fs');
-var loadConfig = require("../load-config.js").loadConfig;
-var readInputFile = require("../load-config.js").readInputFile;
+var loadConfig = require("../src/config.js").loadConfig;
+var readInputFile = require("../src/config.js").readInputFile;
 
 var url   = 'mongodb://localhost:27017/tests';
 
