@@ -1,4 +1,6 @@
-var mongo = require('mongodb').MongoClient;
+var Datastore = require('nedb')
+  , db = new Datastore();
+
 var should = require("should");
 var fs = require('fs');
 var loadConfig = require("../src/config.js").loadConfig;
@@ -16,18 +18,19 @@ var inputFiles = {
                "[12:12:15T02/02/02] [DEBUG] - <xml>\n"
 };
 
+db.insert(
+  { inputFilenames: Object.keys(inputFiles) },
+  function(err, docs) {
+    console.log('inserted docs: '+JSON.stringify(docs));
+  }
+);
 
-mongo.connect(url, function(err, db) {
-  db.config.insert({
-    inputFilenames: { $exists: true }
-  }, {
-    inputFilenames: Object.keys(inputFiles)
-  }, {
-    upsert: true
-  });
-
-  db.close();
-});
+db.find(
+  { inputFilenames: { $exists: true } },
+  function(err, docs) {
+    console.log('inputFilenames: ' + JSON.stringify(docs));
+  }
+);
 
 for (var eaFilename in inputFiles) {
   fs.writeFile("./test/"+eaFilename, inputFiles[eaFilename], function(err) {
@@ -38,15 +41,13 @@ for (var eaFilename in inputFiles) {
 describe('load-config', function() {
   describe('loadConfig', function () {
     it('should return a list of filenames', function () {
-      mongo.connect(url, function(err, db) {
-        loadConfig(db, function(err, config) {
-          config.inputFilenames.should.exist.
-            and.be.an.instanceOf(Array).
-            and.not.have.lengthOf(0);
-        });
-
-        db.close();
+      loadConfig(db, function(err, config) {
+        console.log('loadConfig returned: '+JSON.stringify(config));
+        config.inputFilenames.should.exist.
+          and.be.an.instanceOf(Array).
+          and.not.have.lengthOf(0);
       });
+
     });
   });
 
@@ -58,6 +59,7 @@ describe('load-config', function() {
           lines.push(obj);
         }).
         on('end', function() {
+          console.log('readInputFile: lines: '+JSON.stringify(lines));
           lines.should.have.lengthOf(5);
 
           done();

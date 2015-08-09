@@ -67,18 +67,19 @@ var readInputFile = function (filename) {
 }
 
 var findInputFilenames = function(db, config, callback) {
-  var collection = db.collection('config');
-
-  collection.find({
-    inputFilenames: { $exists: true }
-  }).toArray(function(err, items) {
-      config.inputFilenames = items;
+  db.find(
+    { inputFilenames: { $exists: true } },
+    function(err, docs) {
+      if (docs && docs.length > 0) {
+        config.inputFilenames = docs[0].inputFilenames;
+      }
 
       callback(
         err ? err : null, 
         err ? null : config
       );
-  }); 
+    }
+  ); 
 }
 
 module.exports.loadConfig = loadConfig;
