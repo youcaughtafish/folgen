@@ -2,8 +2,7 @@ var fs = require('fs');
 var through2 = require('through2');
 
 var loadConfig = function(db, callback) {
-  var config = {};
-  findInputFilenames(db, config, function(err, updatedConfig) {
+  findInputFilenames(db, function(err, updatedConfig) {
     if (err) throw err;
 
     callback(err, updatedConfig); 
@@ -66,10 +65,11 @@ var readInputFile = function (filename) {
   }));
 }
 
-var findInputFilenames = function(db, config, callback) {
+var findInputFilenames = function(db, callback) {
   db.find(
     { inputFilenames: { $exists: true } },
     function(err, docs) {
+      var config = {};
       if (docs && docs.length > 0) {
         config.inputFilenames = docs[0].inputFilenames;
       }
